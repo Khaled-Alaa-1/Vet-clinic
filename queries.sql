@@ -1,17 +1,42 @@
 /*Queries that provide answers to the questions from all projects.*/
+SELECT *
+FROM ANIMALS
+WHERE NAME LIKE '%mon';
 
-SELECT * FROM animals WHERE name LIKE '%mon';
 
-SELECT name FROM animals WHERE date_of_birth BETWEEN '2016-01-01' AND '2019-12-31';
+SELECT NAME
+FROM ANIMALS
+WHERE DATE_OF_BIRTH BETWEEN '2016-01-01' AND '2019-12-31';
 
-SELECT name FROM animals WHERE neutered = true AND escape_attempts < 3;
 
-SELECT date_of_birth FROM animals WHERE name IN ('Agumon', 'Pikachu');
+SELECT NAME
+FROM ANIMALS
+WHERE NEUTERED = TRUE
+	AND ESCAPE_ATTEMPTS < 3;
 
-SELECT name, escape_attempts FROM animals WHERE weight_kg > 10.5;
 
-SELECT * FROM animals WHERE neutered = true;
+SELECT DATE_OF_BIRTH
+FROM ANIMALS
+WHERE NAME IN ('Agumon',
+																'Pikachu');
 
-SELECT * FROM animals WHERE name != 'Gabumon';
 
-SELECT * FROM animals WHERE weight_kg BETWEEN 10.4 AND 17.3;
+SELECT NAME,
+	ESCAPE_ATTEMPTS
+FROM ANIMALS
+WHERE WEIGHT_KG > 10.5;
+
+
+SELECT *
+FROM ANIMALS
+WHERE NEUTERED = TRUE;
+
+
+SELECT *
+FROM ANIMALS
+WHERE NAME != 'Gabumon';
+
+
+SELECT *
+FROM ANIMALS
+WHERE WEIGHT_KG BETWEEN 10.4 AND 17.3;
