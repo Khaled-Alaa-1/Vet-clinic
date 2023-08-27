@@ -1,4 +1,3 @@
-/*Queries that provide answers to the questions from all projects.*/
 SELECT *
 FROM ANIMALS
 WHERE NAME LIKE '%mon';
@@ -42,47 +41,171 @@ FROM ANIMALS
 WHERE WEIGHT_KG BETWEEN 10.4 AND 17.3;
 
 BEGIN;
-UPDATE animals SET species = 'unspecified';
-SELECT * FROM animals;
+
+
+UPDATE ANIMALS
+SET SPECIES = 'unspecified';
+
+
+SELECT *
+FROM ANIMALS;
+
 
 ROLLBACK;
-SELECT * FROM animals;
+
+
+SELECT *
+FROM ANIMALS;
 
 BEGIN;
-UPDATE animals SET species = 'digimon' WHERE name LIKE '%mon';
-UPDATE animals SET species = 'pokemon' WHERE species IS NULL;
-SELECT * FROM animals;
+
+
+UPDATE ANIMALS
+SET SPECIES = 'digimon'
+WHERE NAME LIKE '%mon';
+
+
+UPDATE ANIMALS
+SET SPECIES = 'pokemon'
+WHERE SPECIES = 'unspecified';
+
+
+SELECT *
+FROM ANIMALS;
+
+
 COMMIT;
-SELECT * FROM animals;
+
+
+SELECT *
+FROM ANIMALS;
 
 BEGIN;
-DELETE FROM animals;
+
+
+DELETE
+FROM ANIMALS;
+
+
 ROLLBACK;
-SELECT * FROM animals;
+
+
+SELECT *
+FROM ANIMALS;
 
 BEGIN;
-DELETE FROM animals WHERE date_of_birth > '2022-01-01';
-SAVEPOINT my_savepoint;
-UPDATE animals SET weight_kg = weight_kg * -1;
-ROLLBACK TO my_savepoint;
-UPDATE animals SET weight_kg = weight_kg * -1 WHERE weight_kg < 0;
+
+
+DELETE
+FROM ANIMALS
+WHERE DATE_OF_BIRTH > '2022-01-01';
+
+SAVEPOINT MY_SAVEPOINT;
+
+
+UPDATE ANIMALS
+SET WEIGHT_KG = WEIGHT_KG * -1;
+
+
+ROLLBACK TO MY_SAVEPOINT;
+
+
+UPDATE ANIMALS
+SET WEIGHT_KG = WEIGHT_KG * -1
+WHERE WEIGHT_KG < 0;
+
+
 COMMIT;
-SELECT * FROM animals;
 
--- How many animals are there?
-SELECT COUNT(*) FROM animals;
 
--- How many animals have never tried to escape?
-SELECT COUNT(*) FROM animals WHERE escape_attempts = 0;
+SELECT *
+FROM ANIMALS;
 
--- What is the average weight of animals?
-SELECT AVG(weight_kg) FROM animals;
 
--- Who escapes the most, neutered or not neutered animals?
-SELECT neutered, AVG(escape_attempts) FROM animals GROUP BY neutered;
+SELECT COUNT(*)
+FROM ANIMALS;
 
--- What is the minimum and maximum weight of each type of animal?
-SELECT species, MIN(weight_kg), MAX(weight_kg) FROM animals GROUP BY species;
 
--- What is the average number of escape attempts per animal type of those born between 1990 and 2000?
-SELECT species, AVG(escape_attempts) FROM animals WHERE date_of_birth BETWEEN '1990-01-01' AND '2000-12-31' GROUP BY species;
+SELECT COUNT(*)
+FROM ANIMALS
+WHERE ESCAPE_ATTEMPTS = 0;
+
+
+SELECT AVG(WEIGHT_KG)
+FROM ANIMALS;
+
+
+SELECT NEUTERED,
+	AVG(ESCAPE_ATTEMPTS)
+FROM ANIMALS
+GROUP BY NEUTERED;
+
+
+SELECT SPECIES,
+	MIN(WEIGHT_KG),
+	MAX(WEIGHT_KG)
+FROM ANIMALS
+GROUP BY SPECIES;
+
+
+SELECT SPECIES,
+	AVG(ESCAPE_ATTEMPTS)
+FROM ANIMALS
+WHERE DATE_OF_BIRTH BETWEEN '1990-01-01' AND '2000-12-31'
+GROUP BY SPECIES;
+
+-- What animals belong to Melody Pond?
+
+SELECT ANIMALS.NAME
+FROM ANIMALS
+JOIN OWNERS ON ANIMALS.OWNER_ID = OWNERS.ID
+WHERE OWNERS.FULL_NAME = 'Melody Pond';
+
+-- List of all animals that are pokemon (their type is Pokemon)
+
+SELECT ANIMALS.NAME
+FROM ANIMALS
+JOIN SPECIES ON ANIMALS.SPECIES_ID = SPECIES.ID
+WHERE SPECIES.NAME = 'Pokemon';
+
+-- List all owners and their animals, remember to include those that don't own any animal
+
+SELECT OWNERS.FULL_NAME,
+	ANIMALS.NAME
+FROM OWNERS
+LEFT JOIN ANIMALS ON OWNERS.ID = ANIMALS.OWNER_ID;
+
+-- How many animals are there per species?
+
+SELECT SPECIES.NAME,
+	COUNT(*) AS COUNT
+FROM ANIMALS
+JOIN SPECIES ON ANIMALS.SPECIES_ID = SPECIES.ID
+GROUP BY SPECIES.NAME;
+
+-- List all Digimon owned by Jennifer Orwell
+
+SELECT ANIMALS.NAME
+FROM ANIMALS
+JOIN SPECIES ON ANIMALS.SPECIES_ID = SPECIES.ID
+JOIN OWNERS ON ANIMALS.OWNER_ID = OWNERS.ID
+WHERE OWNERS.FULL_NAME = 'Jennifer Orwell'
+	AND SPECIES.NAME = 'Digimon';
+
+-- List all animals owned by Dean Winchester that haven't tried to escape
+
+SELECT ANIMALS.NAME
+FROM ANIMALS
+JOIN OWNERS ON ANIMALS.OWNER_ID = OWNERS.ID 
+WHERE OWNERS.FULL_NAME = 'Dean Winchester'
+	AND ANIMALS.ESCAPE_ATTEMPTS = 0;
+
+-- SELECT owners.full_name, COUNT(*) AS count
+
+SELECT OWNERS.FULL_NAME,
+	COUNT(*) AS COUNT
+FROM ANIMALS
+JOIN OWNERS ON ANIMALS.OWNER_ID = OWNERS.ID
+GROUP BY OWNERS.FULL_NAME
+ORDER BY COUNT DESC
+LIMIT 1;
